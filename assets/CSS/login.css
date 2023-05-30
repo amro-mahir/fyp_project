@@ -6,6 +6,11 @@ h1 {
     margin-bottom: 20px;
 }
 
-#submit-button {
+#login-button, #register-button {
     margin-top: 20px;
+}
+
+#register-link, #login-link {
+    text-decoration: none;
+    color: inherit;
 }
