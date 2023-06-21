@@ -1,1 +1,5 @@
-{}
+{
+  "dependencies": {
+    "ml-regression": "^5.0.0"
+  }
+}

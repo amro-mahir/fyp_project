@@ -33,3 +33,4 @@ fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=us
   .catch(error => {
     console.log('An error occurred while fetching the Tether price:', error);
   });
+  
