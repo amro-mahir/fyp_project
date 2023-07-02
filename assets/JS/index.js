@@ -54,76 +54,168 @@ fetchEthereumPrice()
     console.error('Error fetching Ethereum price:', error);
   });
 
-// Function to fetch the current price of Tether using CoinCap API
-async function fetchTetherPrice() {
-  const response = await fetch('https://api.coincap.io/v2/assets/tether');
-  const data = await response.json();
-
-  if (data && data.data) {
-    const tetherPrice = parseFloat(data.data.priceUsd).toFixed(2);
-    return tetherPrice;
-  }
-
-  return null; // If price data is not available
-}
-
-// Call the function to fetch the current price of Tether
-fetchTetherPrice()
-  .then(tetherPrice => {
-    if (tetherPrice !== null) {
-      console.log('Current Tether price:', tetherPrice);
-      document.getElementById('tether-price-current').innerHTML=`Current Price: $${tetherPrice}`
-    } else {
-      console.log('Unable to fetch Tether price.');
-    }
-  })
-  .catch(error => {
-    console.error('Error fetching Tether price:', error);
-  });
 
 
 // prediction algorithm for bitcoin  
-// Function to fetch the previous price of Bitcoin for each day in the past week
-// Function to calculate the weekly average price of Bitcoin for the last 4 weeks
-const weeks = 4; 
-const currentDate = new Date();
-const weeklyAverages = [];
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function calculateWeeklyAverageBitcoinPrice() {
-  // const weeks = 4; 
-  // const currentDate = new Date();
-  // const weeklyAverages = [];
+  const weeks = 4;
+  const currentDate = new Date();
+  const weeklyAverages = [];
+  const weeklyPercentageDifferences = [];
 
   for (let i = 0; i < weeks; i++) {
-    const endDate = new Date(currentDate.getTime() - (i * 7 * 24 * 60 * 60 * 1000)); // Subtracting the required number of weeks in milliseconds
-    const startDate = new Date(endDate.getTime() - (6 * 24 * 60 * 60 * 1000)); // Subtracting 6 days in milliseconds
+    const endDate = new Date(currentDate.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
 
-    const priceDataResponse = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${startDate.getTime() / 1000}&to=${endDate.getTime() / 1000}`);
-    const priceData = await priceDataResponse.json();
+    const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${startDate.getTime() / 1000}&to=${endDate.getTime() / 1000}`;
 
-    const prices = priceData.prices;
-    if (prices.length > 0) {
-      const weeklySum = prices.reduce((sum, price) => sum + price[1], 0);
-      const weeklyAverage = weeklySum / prices.length;
-      weeklyAverages.push(weeklyAverage);
+    let retryCount = 0;
+    let response;
+
+    while (retryCount < 3) {
+      try {
+        response = await fetch(url);
+        if (response.status === 429) {
+          const retryAfter = response.headers.get('Retry-After');
+          const delayMs = Math.pow(2, retryCount) * 1000;
+
+          console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+          await delay(delayMs);
+          retryCount++;
+        } else {
+          break;
+        }
+      } catch (error) {
+        console.error('Error making API request:', error);
+        break;
+      }
+    }
+
+    if (response && response.status === 200) {
+      try {
+        const priceData = await response.json();
+        const prices = priceData.prices;
+        if (prices && prices.length > 0) {
+          const weeklySum = prices.reduce((sum, price) => sum + price[1], 0);
+          const weeklyAverage = weeklySum / prices.length;
+          weeklyAverages.push(weeklyAverage.toFixed(2));
+          if (weeklyAverages.length >= 2) {
+            const previousWeekAverage = parseFloat(weeklyAverages[weeklyAverages.length - 2]);
+            const percentageDifference = ((weeklyAverage - previousWeekAverage) / previousWeekAverage) * 100;
+            weeklyPercentageDifferences.push(percentageDifference.toFixed(2));
+          } else {
+            weeklyPercentageDifferences.push('N/A');
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
+      }
+    } else {
+      console.error('Error fetching data for Bitcoin. Status:', response ? response.status : 'Unknown');
     }
   }
 
-  return weeklyAverages;
+  return { weeklyAverages, weeklyPercentageDifferences };
 }
 
-// Call the function to calculate the weekly average Bitcoin prices
 calculateWeeklyAverageBitcoinPrice()
-  .then(weeklyAverages => {
-    console.log('Weekly average Bitcoin prices for the last 4 weeks:');
+  .then(({ weeklyAverages, weeklyPercentageDifferences }) => {
+    console.log('Weekly average Bitcoin prices and percentage differences for the last 4 weeks:');
     weeklyAverages.forEach((average, index) => {
       const weekNumber = index + 1;
-      console.log(`Week ${weekNumber}: ${average}`);
-      
+      const percentageDifference = weeklyPercentageDifferences[index];
+      console.log(`Week ${weekNumber}: $${average} (${percentageDifference}%)`);
     });
-    // console.log(weeklyAverages[0]);
   })
   .catch(error => {
     console.error('Error calculating weekly average Bitcoin prices:', error);
   });
 
+
+
+
+
+
+
+// get eth prices
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function calculateWeeklyAverageEthereumPrice() {
+  const weeks = 4;
+  const currentDate = new Date();
+  const weeklyAverages = [];
+  const weeklyPercentageDifferences = [];
+
+  for (let i = 0; i < weeks; i++) {
+    const endDate = new Date(currentDate.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+
+    const url = `https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=${startDate.getTime() / 1000}&to=${endDate.getTime() / 1000}`;
+
+    let retryCount = 0;
+    let response;
+
+    while (retryCount < 3) {
+      try {
+        response = await fetch(url);
+        if (response.status === 429) {
+          const retryAfter = response.headers.get('Retry-After');
+          const delayMs = Math.pow(2, retryCount) * 1000;
+
+          console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+          await delay(delayMs);
+          retryCount++;
+        } else {
+          break;
+        }
+      } catch (error) {
+        console.error('Error making API request:', error);
+        break;
+      }
+    }
+
+    if (response && response.status === 200) {
+      try {
+        const priceData = await response.json();
+        const prices = priceData.prices;
+        if (prices && prices.length > 0) {
+          const weeklySum = prices.reduce((sum, price) => sum + price[1], 0);
+          const weeklyAverage = weeklySum / prices.length;
+          weeklyAverages.push(weeklyAverage.toFixed(2));
+          if (weeklyAverages.length >= 2) {
+            const previousWeekAverage = parseFloat(weeklyAverages[weeklyAverages.length - 2]);
+            const percentageDifference = ((weeklyAverage - previousWeekAverage) / previousWeekAverage) * 100;
+            weeklyPercentageDifferences.push(percentageDifference.toFixed(2));
+          } else {
+            weeklyPercentageDifferences.push('N/A');
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
+      }
+    } else {
+      console.error('Error fetching data for Ethereum. Status:', response ? response.status : 'Unknown');
+    }
+  }
+
+  return { weeklyAverages, weeklyPercentageDifferences };
+}
+
+calculateWeeklyAverageEthereumPrice()
+  .then(({ weeklyAverages, weeklyPercentageDifferences }) => {
+    console.log('Weekly average Ethereum prices and percentage differences for the last 4 weeks:');
+    weeklyAverages.forEach((average, index) => {
+      const weekNumber = index + 1;
+      const percentageDifference = weeklyPercentageDifferences[index];
+      console.log(`Week ${weekNumber}: $${average} (${percentageDifference}%)`);
+    });
+  })
+  .catch(error => {
+    console.error('Error calculating weekly average Ethereum prices:', error);
+  });
