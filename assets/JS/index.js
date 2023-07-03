@@ -58,6 +58,22 @@ async function fetchEthereumPrice() {
 
     let ethPrices = [1807.05,1708.75,1868.37,1903.23]
 
+    const diffAB = (ethPrices[1] - ethPrices[0]) / Math.abs(ethPrices[0]) * 100;
+    const diffBC = (ethPrices[2] - ethPrices[1]) / Math.abs(ethPrices[1]) * 100;
+    const diffCD = (ethPrices[3] - ethPrices[2]) / Math.abs(ethPrices[2]) * 100;
+    const diffDCurrent = (ethereumPrice - ethPrices[3]) / Math.abs(ethPrices[3]) * 100;
+
+    const differenceAvg = ((diffAB + diffBC + diffCD + diffDCurrent) / 4).toFixed(2);
+    console.log(differenceAvg)
+    document.getElementById('eth-future-price').innerHTML = (ethereumPrice * (1+differenceAvg / 100)).toFixed(2)
+    console.log(bitcoinPrice)
+
+    if (document.getElementById('eth-future-price').innerHTML > ethereumPrice) {
+      document.getElementById('eth-future-price').style.color = 'green'
+    } else {
+      document.getElementById('eth-future-price').style.color ='red';
+    }
+
     return ethereumPrice;
   }
 
