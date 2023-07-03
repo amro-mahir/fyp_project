@@ -85,7 +85,7 @@ fetchEthereumPrice()
   .then(ethereumPrice => {
     if (ethereumPrice !== null) {
       console.log('Current Ethereum price:', ethereumPrice);
-      document.getElementById('eth-price-current').innerHTML=`Current Price: $${ethereumPrice}`
+      document.getElementById('eth-price-current').innerHTML=`$${ethereumPrice}`
     } else {
       console.log('Unable to fetch Ethereum price.');
     }
