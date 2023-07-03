@@ -54,8 +54,6 @@ fetchEthereumPrice()
     console.error('Error fetching Ethereum price:', error);
   });
 
-
-
 // prediction algorithm for bitcoin  
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -129,16 +127,12 @@ calculateWeeklyAverageBitcoinPrice()
       const weekNumber = index + 1;
       const percentageDifference = weeklyPercentageDifferences[index];
       console.log(`Week ${weekNumber}: $${average} (${percentageDifference}%)`);
+
     });
   })
   .catch(error => {
     console.error('Error calculating weekly average Bitcoin prices:', error);
   });
-
-
-
-
-
 
 
 // get eth prices
