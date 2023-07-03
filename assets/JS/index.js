@@ -17,10 +17,11 @@ async function fetchBitcoinPrice() {
     
     const differenceAvg = ((diffAB + diffBC + diffCD + diffDCurrent) / 4).toFixed(2);
     console.log(differenceAvg)
-    document.getElementById('btc-future-price').innerHTML = (bitcoinPrice * (1+differenceAvg / 100)).toFixed(2)
+    let futurePriceBtc = (bitcoinPrice * (1+differenceAvg / 100)).toFixed(2)
+    document.getElementById('btc-future-price').innerHTML = `$${futurePriceBtc}`
     console.log(bitcoinPrice)
 
-    if (document.getElementById('btc-future-price').innerHTML > bitcoinPrice) {
+    if (futurePriceBtc > bitcoinPrice) {
       document.getElementById('btc-future-price').style.color = 'green'
     } else {
       document.getElementById('btc-future-price').style.color ='red';
@@ -65,10 +66,11 @@ async function fetchEthereumPrice() {
 
     const differenceAvg = ((diffAB + diffBC + diffCD + diffDCurrent) / 4).toFixed(2);
     console.log(differenceAvg)
-    document.getElementById('eth-future-price').innerHTML = (ethereumPrice * (1+differenceAvg / 100)).toFixed(2)
+    let futurePriceEth = (ethereumPrice * (1+differenceAvg / 100)).toFixed(2)
+    document.getElementById('eth-future-price').innerHTML = `$${futurePriceEth}`
     console.log(bitcoinPrice)
 
-    if (document.getElementById('eth-future-price').innerHTML > ethereumPrice) {
+    if (futurePriceEth > ethereumPrice) {
       document.getElementById('eth-future-price').style.color = 'green'
     } else {
       document.getElementById('eth-future-price').style.color ='red';
@@ -93,7 +95,6 @@ fetchEthereumPrice()
   .catch(error => {
     console.error('Error fetching Ethereum price:', error);
   });
-
 
 // let bitcoinPrices = [26298.77,25956.39,23539.96,30453.39]
 
