@@ -59,6 +59,30 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function fetchWithRetry(url, maxRetries = 3, delayMs = 1000) {
+  let retryCount = 0;
+  let response;
+
+  while (retryCount < maxRetries) {
+    try {
+      response = await fetch(url);
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+        await delay(retryAfter * 1000);
+        retryCount++;
+      } else {
+        break;
+      }
+    } catch (error) {
+      console.error('Error making API request:', error);
+      break;
+    }
+  }
+
+  return response;
+}
+
 async function calculateWeeklyAverageBitcoinPrice() {
   const weeks = 4;
   const currentDate = new Date();
@@ -71,27 +95,7 @@ async function calculateWeeklyAverageBitcoinPrice() {
 
     const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${startDate.getTime() / 1000}&to=${endDate.getTime() / 1000}`;
 
-    let retryCount = 0;
-    let response;
-
-    while (retryCount < 3) {
-      try {
-        response = await fetch(url);
-        if (response.status === 429) {
-          const retryAfter = response.headers.get('Retry-After');
-          const delayMs = Math.pow(2, retryCount) * 1000;
-
-          console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-          await delay(delayMs);
-          retryCount++;
-        } else {
-          break;
-        }
-      } catch (error) {
-        console.error('Error making API request:', error);
-        break;
-      }
-    }
+    const response = await fetchWithRetry(url);
 
     if (response && response.status === 200) {
       try {
@@ -123,12 +127,13 @@ async function calculateWeeklyAverageBitcoinPrice() {
 calculateWeeklyAverageBitcoinPrice()
   .then(({ weeklyAverages, weeklyPercentageDifferences }) => {
     console.log('Weekly average Bitcoin prices and percentage differences for the last 4 weeks:');
-    weeklyAverages.forEach((average, index) => {
-      const weekNumber = index + 1;
-      const percentageDifference = weeklyPercentageDifferences[index];
-      console.log(`Week ${weekNumber}: $${average} (${percentageDifference}%)`);
+    const [week1, week2, week3, week4] = weeklyAverages;
+    const [percentageDiff1, percentageDiff2, percentageDiff3, percentageDiff4] = weeklyPercentageDifferences;
 
-    });
+    console.log(`Week 1: $${week1} (${percentageDiff1}%)`);
+    console.log(`Week 2: $${week2} (${percentageDiff2}%)`);
+    console.log(`Week 3: $${week3} (${percentageDiff3}%)`);
+    console.log(`Week 4: $${week4} (${percentageDiff4}%)`);
   })
   .catch(error => {
     console.error('Error calculating weekly average Bitcoin prices:', error);
@@ -138,6 +143,30 @@ calculateWeeklyAverageBitcoinPrice()
 // get eth prices
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(url, maxRetries = 3, delayMs = 1000) {
+  let retryCount = 0;
+  let response;
+
+  while (retryCount < maxRetries) {
+    try {
+      response = await fetch(url);
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+        await delay(retryAfter * 1000);
+        retryCount++;
+      } else {
+        break;
+      }
+    } catch (error) {
+      console.error('Error making API request:', error);
+      break;
+    }
+  }
+
+  return response;
 }
 
 async function calculateWeeklyAverageEthereumPrice() {
@@ -152,27 +181,7 @@ async function calculateWeeklyAverageEthereumPrice() {
 
     const url = `https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=${startDate.getTime() / 1000}&to=${endDate.getTime() / 1000}`;
 
-    let retryCount = 0;
-    let response;
-
-    while (retryCount < 3) {
-      try {
-        response = await fetch(url);
-        if (response.status === 429) {
-          const retryAfter = response.headers.get('Retry-After');
-          const delayMs = Math.pow(2, retryCount) * 1000;
-
-          console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-          await delay(delayMs);
-          retryCount++;
-        } else {
-          break;
-        }
-      } catch (error) {
-        console.error('Error making API request:', error);
-        break;
-      }
-    }
+    const response = await fetchWithRetry(url);
 
     if (response && response.status === 200) {
       try {
@@ -204,12 +213,17 @@ async function calculateWeeklyAverageEthereumPrice() {
 calculateWeeklyAverageEthereumPrice()
   .then(({ weeklyAverages, weeklyPercentageDifferences }) => {
     console.log('Weekly average Ethereum prices and percentage differences for the last 4 weeks:');
-    weeklyAverages.forEach((average, index) => {
-      const weekNumber = index + 1;
-      const percentageDifference = weeklyPercentageDifferences[index];
-      console.log(`Week ${weekNumber}: $${average} (${percentageDifference}%)`);
-    });
+    const [week1, week2, week3, week4] = weeklyAverages;
+    const [percentageDiff1, percentageDiff2, percentageDiff3, percentageDiff4] = weeklyPercentageDifferences;
+
+    console.log(`Week 1: $${week1} (${percentageDiff1}%)`);
+    console.log(`Week 2: $${week2} (${percentageDiff2}%)`);
+    console.log(`Week 3: $${week3} (${percentageDiff3}%)`);
+    console.log(`Week 4: $${week4} (${percentageDiff4}%)`);
+
+    
   })
   .catch(error => {
     console.error('Error calculating weekly average Ethereum prices:', error);
   });
+
