@@ -7,37 +7,35 @@
     <title>Register</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <link rel="stylesheet" href="/assets/CSS/login.css">
+    <link rel="stylesheet" href="assets/CSS/login.css">
 </head>
 <body>
     <div id="login-form" class="position-absolute top-50 start-50 translate-middle">
         <h1 class="text-center">Register</h1>
-        <form action="">
+        <form action="assets/php/register.php" method="POST">
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput" placeholder="James Smith">
+                <input type="text" class="form-control" id="floatingInput" name="first_name">
                 <label for="floatingInpudt">First Name</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput" placeholder="James Smith">
+                <input type="text" class="form-control" id="floatingInput" name="last_name">
                 <label for="floatingInpudt">Last Name</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="date" class="form-control" id="floatingInput" placeholder="James Smith">
+                <input type="date" class="form-control" id="floatingInput" name="birth_date">
                 <label for="floatingInpudt">Date of Birth</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="email" class="form-control" id="floatingInput" name="email">
                 <label for="floatingInpudt">Email address</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" class="form-control" id="floatingPassword" name="password">
                 <label for="floatingPassword">Password</label>
             </div>
-            
-            
             <div class="text-center">
                 <button type="submit" class="btn btn-light" id="register-button">Submit</button>
-                <button type="" class="btn btn-light" id="login-button">
+                <button type="submit" class="btn btn-light" id="login-button">
                     <a href="index.html" id="login-link">Login</a>
                 </button>
             </div>
