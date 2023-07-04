@@ -21,11 +21,16 @@ async function fetchBitcoinPrice() {
     document.getElementById('btc-future-price').innerHTML = `$${futurePriceBtc}`
     console.log(bitcoinPrice)
 
+    let crashText = document.getElementById('crash-text')
+
     if (futurePriceBtc > bitcoinPrice) {
       document.getElementById('btc-future-price').style.color = 'green'
-    } else {
+    } else if (futurePriceBtc < bitcoinPrice * 0.9) {
       document.getElementById('btc-future-price').style.color ='red';
-    }
+      crashText.innerHTML = 'Warning: Crash Predicted!';
+      crashText.style.color = 'red'
+    } 
+
 
     return bitcoinPrice;
     
