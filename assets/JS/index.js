@@ -23,7 +23,7 @@ async function fetchBitcoinPrice() {
 
     let crashTextBtc = document.getElementById('crash-text-btc')
 
-    if (futurePriceBtc > bitcoinPrice) {
+    if (futurePriceBtc >= bitcoinPrice) {
       document.getElementById('btc-future-price').style.color = 'green'
     } else if (futurePriceBtc < bitcoinPrice * 0.9) {
       document.getElementById('btc-future-price').style.color ='red';
@@ -75,7 +75,7 @@ async function fetchEthereumPrice() {
 
     let crashTextEth = document.getElementById('crash-text-eth')
 
-    if (futurePriceEth > ethereumPrice) {
+    if (futurePriceEth >= ethereumPrice) {
       document.getElementById('eth-future-price').style.color = 'green'
     } else if (futurePriceEth < ethereumPrice * 0.9) {
       document.getElementById('eth-future-price').style.color ='red';
