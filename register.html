@@ -12,7 +12,7 @@
 <body>
     <div id="login-form" class="position-absolute top-50 start-50 translate-middle">
         <h1 class="text-center">Register</h1>
-        <form action="assets/php/register.php" method="POST">
+        <form action="./assets/php/register.php" method="POST">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="floatingInput" name="first_name">
                 <label for="floatingInpudt">First Name</label>
@@ -34,8 +34,9 @@
                 <label for="floatingPassword">Password</label>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-light" id="register-button">Submit</button>
-                <button type="submit" class="btn btn-light" id="login-button">
+                <input type="submit" id="register-button"  class="btn btn-light" name="" id="">
+                <!-- <button type="submit" class="btn btn-light" id="register-button">Submit</button> -->
+                <button type="" class="btn btn-light" id="login-button">
                     <a href="index.html" id="login-link">Login</a>
                 </button>
             </div>

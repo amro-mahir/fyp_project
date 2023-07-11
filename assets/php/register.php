@@ -1,52 +1,31 @@
 <?php
 
-$hostname = 'localhost';
+$firstName = $_POST['first_name'];
+$lastName = $_POST['last_name'];
+$birthDate = $_POST['birth_date'];
+$userEmail = $_POST['email'];
+$userPassword = $_POST['password'];
+
+$servername = 'localhost';
 $username = 'root';
 $password = '';
-$database = 'fyp';
+$dbname = 'fyp';
 
-$conn = mysqli_connect($hostname, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check if the connection was successful
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve form data
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $birth_date = $_POST['birth_date'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Prepare the SQL statement
-    $sql = "INSERT INTO your_table (firstName, lastName, birthDate, email, password) VALUES ($first_name, $last_name, $birth_date, $email, $password)";
-    $stmt = mysqli_prepare($conn, $sql);
-if ($stmt) {
-    // Bind the parameters
-    mysqli_stmt_bind_param($stmt, "sssss", $first_name, $last_name, $birth_date, $email, $password);
-
-    // Execute the statement
-    if (mysqli_stmt_execute($stmt)) {
-        // Success: Data inserted into the database
-        echo "Data inserted successfully.";
-    } else {
-        // Error: Failed to execute the statement
-        echo "Error executing the statement: " . mysqli_stmt_error($stmt);
-    }
-
-    // Close the statement
-    mysqli_stmt_close($stmt);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 } else {
-    // Error: Failed to prepare the statement
-    echo "Error preparing the statement: " . mysqli_error($conn);
+    echo 'connection success';
 }
 
-    // Close the prepared statement
-    mysqli_stmt_close($stmt);
+$sql = "INSERT INTO user (firstName, lastName, birthDate, email, password) VALUES ('$firstName', '$lastName', '$birthDate', '$userEmail', '$userPassword')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Data inserted successfully!";
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
 }
 
-// Close the database connection
-mysqli_close($conn);
+$conn->close();
 ?>
