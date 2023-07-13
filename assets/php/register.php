@@ -23,8 +23,10 @@ $sql = "INSERT INTO user (firstName, lastName, birthDate, email, password) VALUE
 
 if ($conn->query($sql) === TRUE) {
     echo "Data inserted successfully!";
+    header("Location: http://localhost/fyp_project/homepage.html");
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
+    header("Location: https://localhost/fyp_project/register.html");
 }
 
 $conn->close();

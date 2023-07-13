@@ -25,10 +25,16 @@ if ($result === false) {
 
 if ($result->num_rows > 0) {
     // Login successful
-    echo "Login successful!";
+    // echo "Login successful!";
+    header("Location: http://localhost/fyp_project/homepage.html");
 } else {
     // Login failed
-    echo "Invalid username or password";
+    // echo "Invalid username or password";
+  header("Location: http://localhost/fyp_project/loginError.html");
+}
+
+if (isset($_GET['loginFailed']) && $_GET['loginFailed'] === 'true') {
+
 }
 
 // Close the connection
