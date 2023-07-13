@@ -16,8 +16,12 @@ if ($conn->connect_error) {
     echo 'connection success';
 }
 
-$sql = "SELECT * FROM users WHERE email='$email' AND password='$userPassword'";
+$sql = "SELECT * FROM user WHERE email='$email' AND password='$userPassword'";
 $result = $conn->query($sql);
+
+if ($result === false) {
+    die("Error executing query: " . $conn->error);
+}
 
 if ($result->num_rows > 0) {
     // Login successful
