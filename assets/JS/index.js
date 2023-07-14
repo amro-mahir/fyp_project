@@ -73,8 +73,7 @@ async function fetchEthereumPrice() {
     document.getElementById('eth-future-price').innerHTML = `$${futurePriceEth}`
     console.log(bitcoinPrice)
 
-    let crashTextEth = document.getElementById('eth-crash-alert')
-    let successTextEth = document.getElementById('eth-success-alert')
+    let crashTextEth = document.getElementById('crash-text-eth')
 
     if (futurePriceEth >= ethereumPrice) {
       document.getElementById('eth-future-price').style.color = 'green'
