@@ -13,24 +13,22 @@ async function fetchBitcoinPrice() {
     const diffAB = (bitcoinPrices[1] - bitcoinPrices[0]) / Math.abs(bitcoinPrices[0]) * 100;
     const diffBC = (bitcoinPrices[2] - bitcoinPrices[1]) / Math.abs(bitcoinPrices[1]) * 100;
     const diffCD = (bitcoinPrices[3] - bitcoinPrices[2]) / Math.abs(bitcoinPrices[2]) * 100;
-    const diffDCurrent = (bitcoinPrice - bitcoinPrices[3]) / Math.abs(bitcoinPrices[3]) * 100;
-    
+    const diffDCurrent = (bitcoinPrice - bitcoinPrices[3]) / Math.abs(bitcoinPrices[3]) * 100;   
     const differenceAvg = ((diffAB + diffBC + diffCD + diffDCurrent) / 4).toFixed(2);
     console.log(differenceAvg)
     let futurePriceBtc = (bitcoinPrice * (1+differenceAvg / 100)).toFixed(2)
     document.getElementById('btc-future-price').innerHTML = `$${futurePriceBtc}`
     console.log(bitcoinPrice)
-
     let crashTextBtc = document.getElementById('crash-text-btc')
-
     if (futurePriceBtc >= bitcoinPrice) {
       document.getElementById('btc-future-price').style.color = 'green'
     } else if (futurePriceBtc < bitcoinPrice * 0.9) {
       document.getElementById('btc-future-price').style.color ='red';
       crashTextBtc.innerHTML = 'Warning: Crash Predicted! (Drop of 10% or more)';
       crashTextBtc.style.color = 'red'
-    } 
-
+    } else {
+      document.getElementById('btc-future-price').style.color ='red';
+    }
     return bitcoinPrice;
   }
   return null; // If price data is not available
@@ -81,8 +79,9 @@ async function fetchEthereumPrice() {
       document.getElementById('eth-future-price').style.color ='red';
       crashTextEth.innerHTML = 'Warning: Crash Predicted! (Drop of 10% or more)'
       crashTextEth.style.color = 'red'
+    } else {
+      document.getElementById('eth-future-price').style.color ='red';
     }
-
     return ethereumPrice;
   }
 
